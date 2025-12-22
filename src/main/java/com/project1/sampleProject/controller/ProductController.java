@@ -5,6 +5,7 @@ import com.project1.sampleProject.service.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
@@ -61,6 +62,26 @@ public class ProductController {
         }
 
 
+    }
+
+    @GetMapping("/Products/{id}/image")
+    public ResponseEntity<byte[]> fetchImageById(@PathVariable int id) {
+        Product product = productService.getProductById(id);
+
+        if (product == null || product.getImageData() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        MediaType mediaType;
+        try {
+            mediaType = MediaType.parseMediaType(product.getImageType());
+        } catch (Exception e) {
+            mediaType = MediaType.APPLICATION_OCTET_STREAM; // fallback
+        }
+
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .body(product.getImageData());
     }
 
 
