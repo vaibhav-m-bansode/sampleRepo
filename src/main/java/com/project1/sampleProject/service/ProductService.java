@@ -22,4 +22,8 @@ public class ProductService {
         this.productRepo = productRepo;
 
     }
+
+    public Product getProductById(int id) {
+        return productRepo.findById(id).orElse(null);
+    }
 }

@@ -26,5 +26,4 @@ public class Product {
     private LocalDate date;
     private boolean available;
     private int quantity;
-
 }
