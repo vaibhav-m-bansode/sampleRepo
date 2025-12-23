@@ -1,18 +1,19 @@
 package com.project1.sampleProject.controller;
 
 import com.project1.sampleProject.model.Product;
+import com.project1.sampleProject.repository.ProductRepo;
 import com.project1.sampleProject.service.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,6 +83,34 @@ public class ProductController {
         return ResponseEntity.ok()
                 .contentType(mediaType)
                 .body(product.getImageData());
+    }
+
+    @PutMapping("/Products/{id}")
+    public ResponseEntity<?> updateProduct(@RequestPart int id,
+                                                 @RequestPart Product product,
+                                                 @RequestPart MultipartFile image) {
+        try {
+            Product prd = productService.updateProduct(id, product, image);
+
+            return new ResponseEntity<>(prd, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Cannot find the product to update " + e.getMessage(), HttpStatus.NOT_FOUND);
+
+        }
+    }
+
+    @DeleteMapping("/Product/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable int id){
+
+        Product prd = productService.getProductById(id);
+        if(prd != null){
+            productService.deleteProduct(id);
+            return new ResponseEntity<>("Product deleted successfully",HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>("Product not found",HttpStatus.NOT_FOUND);
+
+
     }
 
 

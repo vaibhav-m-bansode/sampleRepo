@@ -35,4 +35,18 @@ public class ProductService {
         product.setImageName(image.getOriginalFilename());
         return productRepo.save(product);
     }
+
+    public Product updateProduct(int id, Product product, MultipartFile image) {
+        Product existingProduct = productRepo.findById(id).orElse(null);
+        if (existingProduct != null) {
+            productRepo.save(existingProduct);
+            return existingProduct;
+        }else{
+            return null;
+        }
+    }
+
+    public void deleteProduct(int id) {
+        productRepo.deleteById(id);
+    }
 }
